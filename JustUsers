@@ -1,0 +1,26 @@
+param(
+[int]$Users=(read-host " How many Users to create ?"),
+[string] $domainname= [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().Name
+)
+
+$collection=@()
+
+1..$Users | ForEach-Object { If ($_ -lt 10) {
+                                $collection += "0$_"}
+                                else { $collection += "$_"}
+}
+
+
+foreach ($i in $collection) {
+
+New-ADUser -Name Potato$i `
+           -AccountPassword (ConvertTo-SecureString -AsPlainText "London2018*" -Force) `
+           -City London `
+           -Company QA  `
+           -DisplayName Potato$i `
+           -Enabled $True `
+           -PasswordNeverExpires $True `
+           -SamAccountName Potato$i `
+           -UserPrincipalName Potato$i@$domainname
+
+}
